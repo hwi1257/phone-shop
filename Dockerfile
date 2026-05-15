@@ -1,3 +1,3 @@
-FROM tomcat:10.1
+FROM tomcat:9.0
 
-COPY . /usr/local/tomcat/webapps/ROOT
+COPY target/*.war /usr/local/tomcat/webapps/ROOT.war
