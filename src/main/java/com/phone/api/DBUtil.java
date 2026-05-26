@@ -9,17 +9,54 @@ public class DBUtil {
 
         try {
 
-            Class.forName("com.mysql.cj.jdbc.Driver");
+            Class.forName(
+                    "com.mysql.cj.jdbc.Driver"
+            );
+
+            String host =
+                    System.getenv(
+                            "MYSQLHOST"
+                    );
+
+            String port =
+                    System.getenv(
+                            "MYSQLPORT"
+                    );
+
+            String database =
+                    System.getenv(
+                            "MYSQLDATABASE"
+                    );
+
+            String user =
+                    System.getenv(
+                            "MYSQLUSER"
+                    );
+
+            String password =
+                    System.getenv(
+                            "MYSQLPASSWORD"
+                    );
+
+            String url =
+                    "jdbc:mysql://"
+                            + host
+                            + ":"
+                            + port
+                            + "/"
+                            + database
+                            + "?serverTimezone=Asia/Seoul";
 
             return DriverManager.getConnection(
-                    "jdbc:mysql://localhost:3306/phone_shop",
-                    "root",
-                    "106803kim!"
+                    url,
+                    user,
+                    password
             );
 
         } catch (Exception e) {
 
             e.printStackTrace();
+
             return null;
         }
     }
