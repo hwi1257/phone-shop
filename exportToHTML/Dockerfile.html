@@ -1,0 +1,29 @@
+<html>
+<head>
+<title>Dockerfile</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.s0 { color: #cf8e6d;}
+.s1 { color: #bcbec4;}
+.s2 { color: #bcbec4;}
+.ls0 { height: 1px; border-width: 0; color: #43454a; background-color:#43454a}
+</style>
+</head>
+<body bgcolor="#191a1c">
+<table CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#606060" >
+<tr><td><center>
+<font face="Arial, Helvetica" color="#000000">
+Dockerfile</font>
+</center></td></tr></table>
+<pre><span class="s0">FROM </span><span class="s1">maven:3</span><span class="s2">.</span><span class="s1">9-eclipse-temurin-17 AS build</span>
+
+<span class="s0">WORKDIR /</span><span class="s1">app</span>
+
+<span class="s0">COPY </span><span class="s2">. .</span>
+
+<span class="s0">RUN </span><span class="s1">mvn clean package</span>
+<hr class="ls0"><span class="s0">FROM </span><span class="s1">tomcat:9</span><span class="s2">.</span><span class="s1">0</span>
+
+<span class="s0">COPY --</span><span class="s1">from=build </span><span class="s0">/</span><span class="s1">app</span><span class="s0">/</span><span class="s1">target</span><span class="s0">/*</span><span class="s2">.</span><span class="s1">war </span><span class="s0">/</span><span class="s1">usr</span><span class="s0">/</span><span class="s1">local</span><span class="s0">/</span><span class="s1">tomcat</span><span class="s0">/</span><span class="s1">webapps</span><span class="s0">/</span><span class="s1">ROOT</span><span class="s2">.</span><span class="s1">war</span></pre>
+</body>
+</html>
