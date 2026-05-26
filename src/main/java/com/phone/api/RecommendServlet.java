@@ -28,6 +28,7 @@ import java.io.BufferedReader;import java.io.IOException;import java.io.InputStr
 
             String apiKey =
                     System.getenv("GEMINI_API_KEY");
+            System.out.println("KEY = " + apiKey);
 
             URL url = new URL(
                     "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-pro:generateContent?key="
