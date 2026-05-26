@@ -64,11 +64,14 @@ public class RegisterServlet extends HttpServlet {
 
             PreparedStatement ps =
                     conn.prepareStatement(
-                            "INSERT INTO users(id, password) VALUES (?, ?)"
+                            "INSERT INTO users(id, username, password) VALUES (?, ?, ?)"
                     );
 
             ps.setString(1, id);
-            ps.setString(2, password);
+
+            ps.setString(2, id);
+
+            ps.setString(3, password);
 
             ps.executeUpdate();
 
