@@ -15,9 +15,14 @@ import org.json.JSONObject;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 
 @WebServlet("/phones")
 public class PhoneServlet extends HttpServlet {
@@ -27,101 +32,160 @@ public class PhoneServlet extends HttpServlet {
                          HttpServletResponse response)
             throws ServletException, IOException {
 
-        String clientId = "1a8RKT_6BspX6M5jrXEQ";
-        String clientSecret = "H7Hy06fzOU";
+        String clientId =
+                "1a8RKT_6BspX6M5jrXEQ";
 
-        // 비교할 핸드폰 리스트
-        String[] models = {
-                "갤럭시 S26 자급제",
-                "갤럭시 S26+ 자급제",
-                "갤럭시 S26 울트라 자급제",
-                "아이폰 17 자급제",
-                "아이폰 17 프로 자급제"
-        };
+        String clientSecret =
+                "H7Hy06fzOU";
 
         List<Phone> phoneList =
                 new ArrayList<>();
 
-        for (String model : models) {
+        try {
 
-            String query =
-                    URLEncoder.encode(model, "UTF-8");
+            Connection conn =
+                    DBUtil.getConnection();
 
-            String apiURL =
-                    "https://openapi.naver.com/v1/search/shop.json?query="
-                            + query;
+            PreparedStatement ps =
+                    conn.prepareStatement(
+                            "SELECT * FROM phones"
+                    );
 
-            URL url = new URL(apiURL);
+            ResultSet rs =
+                    ps.executeQuery();
 
-            HttpURLConnection con =
-                    (HttpURLConnection) url.openConnection();
+            while(rs.next()) {
 
-            con.setRequestMethod("GET");
+                int phoneId =
+                        rs.getInt("phone_id");
 
-            con.setRequestProperty(
-                    "X-Naver-Client-Id",
-                    clientId
-            );
+                String brand =
+                        rs.getString("brand");
 
-            con.setRequestProperty(
-                    "X-Naver-Client-Secret",
-                    clientSecret
-            );
+                String name =
+                        rs.getString("name");
 
-            BufferedReader br;
+                String chip =
+                        rs.getString("chip");
 
-            if (con.getResponseCode() == 200) {
+                int antutu =
+                        rs.getInt("antutu");
 
-                br = new BufferedReader(
-                        new InputStreamReader(con.getInputStream())
+                int score3d =
+                        rs.getInt("score3d");
+
+                String query =
+                        URLEncoder.encode(
+                                name + " 자급제",
+                                "UTF-8"
+                        );
+
+                String apiURL =
+                        "https://openapi.naver.com/v1/search/shop.json?query="
+                                + query;
+
+                URL url =
+                        new URL(apiURL);
+
+                HttpURLConnection con =
+                        (HttpURLConnection)
+                                url.openConnection();
+
+                con.setRequestMethod("GET");
+
+                con.setRequestProperty(
+                        "X-Naver-Client-Id",
+                        clientId
                 );
 
-            } else {
-
-                br = new BufferedReader(
-                        new InputStreamReader(con.getErrorStream())
+                con.setRequestProperty(
+                        "X-Naver-Client-Secret",
+                        clientSecret
                 );
-            }
 
-            String inputLine;
-            StringBuilder result =
-                    new StringBuilder();
+                BufferedReader br;
 
-            while ((inputLine = br.readLine()) != null) {
+                if(con.getResponseCode() == 200) {
 
-                result.append(inputLine);
-            }
+                    br = new BufferedReader(
+                            new InputStreamReader(
+                                    con.getInputStream()
+                            )
+                    );
 
-            br.close();
+                } else {
 
-            JSONObject json =
-                    new JSONObject(result.toString());
+                    br = new BufferedReader(
+                            new InputStreamReader(
+                                    con.getErrorStream()
+                            )
+                    );
+                }
 
-            JSONArray items =
-                    json.getJSONArray("items");
+                String inputLine;
 
-            if (items.length() > 0) {
+                StringBuilder result =
+                        new StringBuilder();
 
-                JSONObject firstItem =
-                        items.getJSONObject(0);
+                while((inputLine = br.readLine()) != null) {
 
-                String title =
-                        model;
+                    result.append(inputLine);
+                }
 
-                String price =
-                        firstItem.getString("lprice");
+                br.close();
 
-                String image =
-                        firstItem.getString("image");
+                JSONObject json =
+                        new JSONObject(
+                                result.toString()
+                        );
+
+                JSONArray items =
+                        json.getJSONArray("items");
+
+                String image = "";
+
+                String price = "";
+
+                if(items.length() > 0) {
+
+                    JSONObject firstItem =
+                            items.getJSONObject(0);
+
+                    image =
+                            firstItem.getString("image");
+
+                    price =
+                            firstItem.getString("lprice");
+                }
 
                 Phone phone =
-                        new Phone(title, price, image);
+                        new Phone(
+                                phoneId,
+                                brand,
+                                name,
+                                chip,
+                                antutu,
+                                score3d
+                        );
+
+                phone.setPrice(price);
+
+                phone.setImage(image);
 
                 phoneList.add(phone);
             }
+
+            conn.close();
+
+        } catch (Exception e) {
+
+            e.printStackTrace();
         }
 
-        request.setAttribute("phones", phoneList);
+        request.setAttribute(
+                "phones",
+                phoneList
+        );
 
         request.getRequestDispatcher("/index.jsp")
                 .forward(request, response);

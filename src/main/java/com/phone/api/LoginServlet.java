@@ -2,6 +2,10 @@ package com.phone.api;
 
 import java.io.IOException;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -23,20 +27,41 @@ public class LoginServlet extends HttpServlet {
         String password =
                 request.getParameter("password");
 
-        String savedPassword =
-                UserStore.users.get(id);
+        try {
 
-        if(savedPassword != null
-                &&
-                savedPassword.equals(password)) {
+            Connection conn =
+                    DBUtil.getConnection();
 
-            request.getSession()
-                    .setAttribute("loginId", id);
+            PreparedStatement ps =
+                    conn.prepareStatement(
+                            "SELECT * FROM users WHERE id=? AND password=?"
+                    );
 
-            response.getWriter()
-                    .write("success");
+            ps.setString(1, id);
+            ps.setString(2, password);
 
-        } else {
+            ResultSet rs =
+                    ps.executeQuery();
+
+            if(rs.next()) {
+
+                request.getSession()
+                        .setAttribute("loginId", id);
+
+                response.getWriter()
+                        .write("success");
+
+            } else {
+
+                response.getWriter()
+                        .write("fail");
+            }
+
+            conn.close();
+
+        } catch (Exception e) {
+
+            e.printStackTrace();
 
             response.getWriter()
                     .write("fail");

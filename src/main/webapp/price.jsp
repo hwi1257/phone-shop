@@ -65,9 +65,6 @@
 
       box-shadow:
               0 40px 100px rgba(0,0,0,0.65);
-
-      animation:
-              windowIn 0.8s ease;
     }
 
     .topbar{
@@ -133,18 +130,6 @@
       font-size:14px;
 
       cursor:pointer;
-
-      transition:
-              0.25s;
-    }
-
-    .back-btn:hover{
-
-      background:
-              rgba(255,255,255,0.16);
-
-      transform:
-              translateY(-2px);
     }
 
     .content{
@@ -156,12 +141,14 @@
 
     .sidebar{
 
-      width:240px;
+      width:260px;
 
       border-right:
               1px solid rgba(255,255,255,0.06);
 
       padding:30px 20px;
+
+      overflow-y:auto;
     }
 
     .logo{
@@ -206,14 +193,12 @@
 
       flex:1;
 
-      position:relative;
-
       display:flex;
 
       justify-content:center;
       align-items:center;
 
-      overflow:hidden;
+      padding:20px;
     }
 
     .placeholder{
@@ -228,7 +213,11 @@
 
     .card{
 
-      width:340px;
+      width:380px;
+
+      max-height:500px;
+
+      overflow:hidden;
 
       padding:28px;
 
@@ -240,15 +229,9 @@
       border:
               1px solid rgba(255,255,255,0.06);
 
-      backdrop-filter:
-              blur(20px);
-
       color:white;
 
       text-align:center;
-
-      animation:
-              cardIn 0.7s ease;
     }
 
     .phone-image{
@@ -259,11 +242,6 @@
       object-fit:contain;
 
       margin-bottom:18px;
-
-      filter:
-              drop-shadow(
-                      0 20px 40px rgba(0,0,0,0.5)
-              );
     }
 
     .phone-name{
@@ -281,8 +259,6 @@
               rgba(255,255,255,0.6);
 
       margin-bottom:10px;
-
-      font-size:14px;
     }
 
     .price{
@@ -291,23 +267,7 @@
 
       font-weight:800;
 
-      background:
-              linear-gradient(
-                      90deg,
-                      #00d4ff,
-                      #ff00aa,
-                      #00d4ff
-              );
-
-      background-size:
-              300% 300%;
-
-      -webkit-background-clip:text;
-
-      -webkit-text-fill-color:transparent;
-
-      animation:
-              aurora 6s ease infinite;
+      color:#00d4ff;
     }
 
     .loading{
@@ -317,67 +277,21 @@
       font-size:18px;
     }
 
-    @keyframes aurora{
+    .ai-result{
 
-      0%{
+      margin-top:20px;
 
-        background-position:
-                0% 50%;
-      }
+      line-height:1.8;
 
-      50%{
+      font-size:16px;
 
-        background-position:
-                100% 50%;
-      }
+      white-space:pre-wrap;
 
-      100%{
+      text-align:left;
 
-        background-position:
-                0% 50%;
-      }
-    }
+      max-height:180px;
 
-    @keyframes windowIn{
-
-      from{
-
-        opacity:0;
-
-        transform:
-                scale(0.92)
-                translateY(40px);
-      }
-
-      to{
-
-        opacity:1;
-
-        transform:
-                scale(1)
-                translateY(0);
-      }
-    }
-
-    @keyframes cardIn{
-
-      from{
-
-        opacity:0;
-
-        transform:
-                translateY(30px)
-                scale(0.94);
-      }
-
-      to{
-
-        opacity:1;
-
-        transform:
-                translateY(0)
-                scale(1);
-      }
+      overflow-y:auto;
     }
 
   </style>
@@ -399,7 +313,7 @@
     </div>
 
     <button class="back-btn"
-            onclick="goHome()">
+            onclick="location.href='home.jsp'">
 
       ← Home
 
@@ -421,21 +335,15 @@
               onchange="changeBrand(this.value)">
 
         <option value="">
-
           제조사 선택
-
         </option>
 
         <option value="apple">
-
           Apple
-
         </option>
 
         <option value="samsung">
-
           Samsung
-
         </option>
 
       </select>
@@ -445,12 +353,35 @@
               onchange="selectPhone(this.value)">
 
         <option value="">
-
           핸드폰 선택
-
         </option>
 
       </select>
+
+
+
+      <textarea
+              id="styleInput"
+              class="select"
+              placeholder="원하는 스타일 입력"
+              style="height:120px;resize:none;"></textarea>
+
+      <button
+              onclick="recommendPhone(event)"
+              class="select"
+              style="
+              cursor:pointer;
+              background:
+              linear-gradient(
+              90deg,
+              #00d4ff,
+              #a855f7
+              );
+              ">
+
+        AI 추천 받기
+
+      </button>
 
     </div>
 
@@ -473,6 +404,8 @@
 
   const phones = [
 
+    // Apple
+
     {
       brand:"apple",
       name:"iPhone 17 Pro Max 자급제"
@@ -485,22 +418,17 @@
 
     {
       brand:"apple",
-      name:"iPhone Air 자급제"
-    },
-
-    {
-      brand:"apple",
-      name:"iPhone 17 자급제"
-    },
-
-    {
-      brand:"apple",
-      name:"iPhone 16 Pro 자급제"
+      name:"iPhone 17 Air 자급제"
     },
 
     {
       brand:"apple",
       name:"iPhone 16 Pro Max 자급제"
+    },
+
+    {
+      brand:"apple",
+      name:"iPhone 16 Pro 자급제"
     },
 
     {
@@ -515,17 +443,12 @@
 
     {
       brand:"apple",
-      name:"iPhone 16e 자급제"
+      name:"iPhone 15 Pro Max 자급제"
     },
 
     {
       brand:"apple",
       name:"iPhone 15 Pro 자급제"
-    },
-
-    {
-      brand:"apple",
-      name:"iPhone 15 Pro Max 자급제"
     },
 
     {
@@ -540,22 +463,22 @@
 
     {
       brand:"apple",
-      name:"iPhone 14 Pro 자급제"
-    },
-
-    {
-      brand:"apple",
       name:"iPhone 14 Pro Max 자급제"
     },
 
     {
       brand:"apple",
-      name:"iPhone 14 자급제"
+      name:"iPhone 14 Pro 자급제"
     },
 
     {
       brand:"apple",
       name:"iPhone 14 Plus 자급제"
+    },
+
+    {
+      brand:"apple",
+      name:"iPhone 14 자급제"
     },
 
     {
@@ -570,12 +493,12 @@
 
     {
       brand:"apple",
-      name:"iPhone 13 자급제"
+      name:"iPhone 13 mini 자급제"
     },
 
     {
       brand:"apple",
-      name:"iPhone 13 mini 자급제"
+      name:"iPhone 13 자급제"
     },
 
     {
@@ -590,28 +513,17 @@
 
     {
       brand:"apple",
+      name:"iPhone 12 mini 자급제"
+    },
+
+    {
+      brand:"apple",
       name:"iPhone 12 자급제"
     },
 
-    {
-      brand:"apple",
-      name:"iPhone 12 Mini 자급제"
-    },
 
-    {
-      brand:"apple",
-      name:"iPhone 11 Pro Max 자급제"
-    },
 
-    {
-      brand:"apple",
-      name:"iPhone 11 Pro 자급제"
-    },
-
-    {
-      brand:"apple",
-      name:"iPhone 11 자급제"
-    },
+    // Samsung S Series
 
     {
       brand:"samsung",
@@ -620,7 +532,7 @@
 
     {
       brand:"samsung",
-      name:"갤럭시 S26+ 자급제"
+      name:"갤럭시 S26 플러스 자급제"
     },
 
     {
@@ -635,7 +547,7 @@
 
     {
       brand:"samsung",
-      name:"갤럭시 S25+ 자급제"
+      name:"갤럭시 S25 플러스 자급제"
     },
 
     {
@@ -650,7 +562,7 @@
 
     {
       brand:"samsung",
-      name:"갤럭시 S24+ 자급제"
+      name:"갤럭시 S24 플러스 자급제"
     },
 
     {
@@ -665,7 +577,7 @@
 
     {
       brand:"samsung",
-      name:"갤럭시 S23+ 자급제"
+      name:"갤럭시 S23 플러스 자급제"
     },
 
     {
@@ -675,8 +587,37 @@
 
     {
       brand:"samsung",
-      name:"갤럭시 S23 FE 자급제"
+      name:"갤럭시 S22 울트라 자급제"
     },
+
+    {
+      brand:"samsung",
+      name:"갤럭시 S22 플러스 자급제"
+    },
+
+    {
+      brand:"samsung",
+      name:"갤럭시 S22 자급제"
+    },
+
+    {
+      brand:"samsung",
+      name:"갤럭시 S21 울트라 자급제"
+    },
+
+    {
+      brand:"samsung",
+      name:"갤럭시 S21 플러스 자급제"
+    },
+
+    {
+      brand:"samsung",
+      name:"갤럭시 S21 자급제"
+    },
+
+
+
+    // Samsung Fold
 
     {
       brand:"samsung",
@@ -700,6 +641,20 @@
 
     {
       brand:"samsung",
+      name:"갤럭시 Z 폴드3 자급제"
+    },
+
+
+
+    // Samsung Flip
+
+    {
+      brand:"samsung",
+      name:"갤럭시 Z 플립7 자급제"
+    },
+
+    {
+      brand:"samsung",
       name:"갤럭시 Z 플립6 자급제"
     },
 
@@ -711,23 +666,14 @@
     {
       brand:"samsung",
       name:"갤럭시 Z 플립4 자급제"
+    },
+
+    {
+      brand:"samsung",
+      name:"갤럭시 Z 플립3 자급제"
     }
 
   ];
-
-  function goHome(){
-
-    document.body.style.opacity = "0";
-
-    document.body.style.transition =
-            "0.4s";
-
-    setTimeout(()=>{
-
-      location.href='home.jsp';
-
-    },400);
-  }
 
   function changeBrand(brand){
 
@@ -736,15 +682,10 @@
                     "phoneSelect"
             );
 
-    select.innerHTML = `
-
-        <option value="">
-
-            핸드폰 선택
-
-        </option>
-
-    `;
+    select.innerHTML =
+            `<option value="">
+                핸드폰 선택
+             </option>`;
 
     phones
             .filter(
@@ -753,15 +694,11 @@
 
             .forEach(phone=>{
 
-              select.innerHTML += `
+              select.innerHTML +=
 
-                <option value="${phone.name}">
-
-                    ${phone.name}
-
-                </option>
-
-            `;
+                      `<option value="${phone.name}">
+                            ${phone.name}
+                       </option>`;
             });
   }
 
@@ -769,31 +706,28 @@
 
     document.getElementById(
             "result"
-    ).innerHTML = `
+    ).innerHTML =
 
-        <div class="loading">
-
-            가격 불러오는 중...
-
-        </div>
-
-    `;
+            `<div class="loading">
+                가격 불러오는 중...
+             </div>`;
 
     try{
 
       const response =
               await fetch(
                       `price?query=${
-                    encodeURIComponent(
-                        name + " 자급제"
-                    )
-                }`
+                              encodeURIComponent(name)
+                      }`
               );
 
       const data =
               await response.json();
 
-      if(data.items && data.items.length > 0){
+      if(
+              data.items &&
+              data.items.length > 0
+      ){
 
         const item =
                 data.items[0];
@@ -804,40 +738,160 @@
 
         document.getElementById(
                 "result"
-        ).innerHTML = `
+        ).innerHTML =
 
-            <div class="card">
+                `<div class="card">
 
-                <img class="phone-image"
-                     src="${item.image}">
+                    <img
+                        class="phone-image"
+                        src="${item.image}">
 
-                <div class="phone-name">
+                    <div class="phone-name">
+                        ${name}
+                    </div>
 
-                    ${name}
+                    <div class="price-label">
+                        네이버 최저가
+                    </div>
 
-                </div>
+                    <div class="price">
+                        ₩${price}
+                    </div>
 
-                <div class="price-label">
-
-                    네이버 자급제 최저가
-
-                </div>
-
-                <div class="price">
-
-                    ₩${price}
-
-                </div>
-
-            </div>
-
-            `;
+                </div>`;
       }
 
     }catch(e){
 
       console.log(e);
+
+      document.getElementById(
+              "result"
+      ).innerHTML =
+
+              `<div class="loading">
+                    가격 조회 실패
+               </div>`;
     }
+  }
+
+  async function recommendPhone(event){
+
+    const button =
+            event.target;
+
+    button.disabled = true;
+
+    button.innerText =
+            "AI 분석 중...";
+
+    const budget = "제한 없음";
+
+    const style =
+            document.getElementById(
+                    "styleInput"
+            ).value;
+
+    document.getElementById(
+            "result"
+    ).innerHTML =
+
+            `<div class="loading">
+                AI 분석 중...
+             </div>`;
+
+    try{
+
+      const response =
+              await fetch(
+                      "recommend",
+                      {
+                        method:"POST",
+
+                        headers:{
+                          "Content-Type":
+                                  "application/x-www-form-urlencoded"
+                        },
+
+                        body:
+                                `budget=${encodeURIComponent(budget)}&style=${encodeURIComponent(style)}`
+                      }
+              );
+
+      const text =
+              await response.text();
+
+      let searchQuery =
+              text
+                      .split("\n")[0]
+                      .replace("추천:", "")
+                      .trim();
+
+      let imageUrl = "";
+
+      try{
+
+        const imageResponse =
+                await fetch(
+                        `price?query=${
+                                encodeURIComponent(searchQuery)
+                        }`
+                );
+
+        const imageData =
+                await imageResponse.json();
+
+        if(
+                imageData.items &&
+                imageData.items.length > 0
+        ){
+
+          imageUrl =
+                  imageData.items[0].image;
+        }
+
+      }catch(e){
+
+        console.log(e);
+      }
+
+      document.getElementById(
+              "result"
+      ).innerHTML =
+
+              `<div class="card">
+
+                    <img
+                        class="phone-image"
+                        src="${imageUrl}">
+
+                    <div class="phone-name">
+                        🤖 AI 추천
+                    </div>
+
+                    <div class="ai-result">
+                        ${text}
+                    </div>
+
+               </div>`;
+
+    }catch(e){
+
+      console.log(e);
+
+      document.getElementById(
+              "result"
+      ).innerHTML =
+
+              `<div class="loading">
+                    AI 추천 실패
+               </div>`;
+    }
+
+    button.disabled = false;
+
+    button.innerText =
+            "AI 추천 받기";
   }
 
 </script>
