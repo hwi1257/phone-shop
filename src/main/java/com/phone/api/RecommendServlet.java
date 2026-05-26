@@ -1,23 +1,12 @@
 package com.phone.api;
 
-import org.json.JSONArray;
-import org.json.JSONObject;
+import org.json.JSONArray;import org.json.JSONObject;
 
-import javax.servlet.ServletException;
-import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import javax.servlet.ServletException;import javax.servlet.annotation.WebServlet;import javax.servlet.http.HttpServlet;import javax.servlet.http.HttpServletRequest;import javax.servlet.http.HttpServletResponse;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.net.HttpURLConnection;
-import java.net.URL;
+import java.io.BufferedReader;import java.io.IOException;import java.io.InputStreamReader;import java.io.OutputStream;import java.net.HttpURLConnection;import java.net.URL;
 
-@WebServlet("/recommend")
-public class RecommendServlet extends HttpServlet {
+@WebServlet("/recommend")public class RecommendServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest request,
@@ -37,7 +26,8 @@ public class RecommendServlet extends HttpServlet {
                     ? "제한 없음"
                     : budget + "원";
 
-            String apiKey = "AIzaSyBcv1lUoGa6jzMH86YzWbYRJTU-JOvo2H0";
+            String apiKey =
+                    System.getenv("GEMINI_API_KEY");
 
             URL url = new URL(
                     "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-pro:generateContent?key="
