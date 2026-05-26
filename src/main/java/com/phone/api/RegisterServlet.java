@@ -64,7 +64,7 @@ public class RegisterServlet extends HttpServlet {
 
             PreparedStatement ps =
                     conn.prepareStatement(
-                            "INSERT INTO users VALUES (?, ?)"
+                            "INSERT INTO users(id, password) VALUES (?, ?)"
                     );
 
             ps.setString(1, id);
